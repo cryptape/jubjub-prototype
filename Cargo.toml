@@ -7,11 +7,13 @@ authors = ["Sean Bowe <ewillbefull@gmail.com>"]
 rand = "0.3"
 
 [dependencies.pairing]
-version = "0.11"
+git = "https://github.com/Senlody/pairing.git"
+branch = "0.11-release"
 default-features = false
 
 [dependencies.bellman]
-version = "0.0.3"
+git = "https://github.com/Senlody/bellman.git"
+branch = "0.0.4_modified"
 default-features = false
 
 [features]
