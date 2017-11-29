@@ -1639,7 +1639,7 @@ pub fn assert_nonless_than<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit],small
 }
 
 pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit],small: &[Bit], Mp:&[Bit],Mm:&[Bit], cs: &mut CS)
-                                                               -> Result<Bit, Error>
+                                                               -> Result<(), Error>
 {
     let mut b1 = FunBit::Constant(false);
 
@@ -1650,7 +1650,7 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
 
         let t1 = big.xor(&small, cs)?;
         let t2 = big.not().and(&small, cs)?;
-        let t3 = t1.not().and(&carry, cs)?;
+        let t3 = t1.not().and(&b1, cs)?;
         let t4 = t2.or(&t3, cs)?;
 
         b1 = t4.not();
@@ -1658,14 +1658,14 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
 
     let mut b2 = FunBit::Constant(false);
 
-    // small>Mm
-    for(big,small)in big.iter().cloned().zip(small.iter().cloned()) {
+    // small>=Mm
+    for(big,small)in small.iter().cloned().zip(Mm.iter().cloned()) {
         let big = FunBit::from_bit(big);
         let small = FunBit::from_bit(small);
 
         let t1 = big.xor(&small, cs)?;
         let t2 = big.not().and(&small, cs)?;
-        let t3 = t1.not().and(&carry, cs)?;
+        let t3 = t1.not().and(&b2, cs)?;
         let t4 = t2.or(&t3, cs)?;
 
         b2 = t4.not();
@@ -1673,14 +1673,14 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
 
     let mut b3 = FunBit::Constant(false);
 
-    // Mp>big
-    for(big,small)in big.iter().cloned().zip(small.iter().cloned()) {
+    // Mp>=big
+    for(big,small)in Mp.iter().cloned().zip(big.iter().cloned()) {
         let big = FunBit::from_bit(big);
         let small = FunBit::from_bit(small);
 
         let t1 = big.xor(&small, cs)?;
         let t2 = big.not().and(&small, cs)?;
-        let t3 = t1.not().and(&carry, cs)?;
+        let t3 = t1.not().and(&b3, cs)?;
         let t4 = t2.or(&t3, cs)?;
 
         b3 = t4.not();
