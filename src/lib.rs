@@ -1638,6 +1638,62 @@ pub fn assert_nonless_than<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit],small
     Ok(())
 }
 
+pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit],small: &[Bit], Mp:&[Bit],Mm:&[Bit], cs: &mut CS)
+                                                               -> Result<Bit, Error>
+{
+    let mut b1 = FunBit::Constant(false);
+
+    // big>=small
+    for(big,small)in big.iter().cloned().zip(small.iter().cloned()) {
+        let big = FunBit::from_bit(big);
+        let small = FunBit::from_bit(small);
+
+        let t1 = big.xor(&small, cs)?;
+        let t2 = big.not().and(&small, cs)?;
+        let t3 = t1.not().and(&carry, cs)?;
+        let t4 = t2.or(&t3, cs)?;
+
+        b1 = t4.not();
+    }
+
+    let mut b2 = FunBit::Constant(false);
+
+    // small>Mm
+    for(big,small)in big.iter().cloned().zip(small.iter().cloned()) {
+        let big = FunBit::from_bit(big);
+        let small = FunBit::from_bit(small);
+
+        let t1 = big.xor(&small, cs)?;
+        let t2 = big.not().and(&small, cs)?;
+        let t3 = t1.not().and(&carry, cs)?;
+        let t4 = t2.or(&t3, cs)?;
+
+        b2 = t4.not();
+    }
+
+    let mut b3 = FunBit::Constant(false);
+
+    // Mp>big
+    for(big,small)in big.iter().cloned().zip(small.iter().cloned()) {
+        let big = FunBit::from_bit(big);
+        let small = FunBit::from_bit(small);
+
+        let t1 = big.xor(&small, cs)?;
+        let t2 = big.not().and(&small, cs)?;
+        let t3 = t1.not().and(&carry, cs)?;
+        let t4 = t2.or(&t3, cs)?;
+
+        b3 = t4.not();
+    }
+
+    let res = b1.xor(&b2,cs)?.xor(&b3,cs)?;
+    // dirty and somewhat cheap
+    // big >=small
+    res.not().assert_is_false(cs);
+
+    Ok(())
+}
+
 #[test]
 fn testy_more_pedersen()
 {
