@@ -1653,7 +1653,7 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
         let t3 = t1.not().and(&b1, cs)?;
         let t4 = t2.or(&t3, cs)?;
 
-        b1 = t4.not();
+        b1 = t4;
     }
 
     let mut b2 = FunBit::Constant(false);
@@ -1668,7 +1668,7 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
         let t3 = t1.not().and(&b2, cs)?;
         let t4 = t2.or(&t3, cs)?;
 
-        b2 = t4.not();
+        b2 = t4;
     }
 
     let mut b3 = FunBit::Constant(false);
@@ -1683,13 +1683,13 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
         let t3 = t1.not().and(&b3, cs)?;
         let t4 = t2.or(&t3, cs)?;
 
-        b3 = t4.not();
+        b3 = t4;
     }
 
     let res = b1.xor(&b2,cs)?.xor(&b3,cs)?;
     // dirty and somewhat cheap
     // big >=small
-    res.not().assert_is_false(cs);
+    res.assert_is_false(cs);
 
     Ok(())
 }
