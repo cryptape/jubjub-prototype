@@ -1643,7 +1643,7 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
 {
     let mut b1 = FunBit::Constant(false);
 
-    // big>=small
+    // big<small
     for(big,small)in big.iter().cloned().zip(small.iter().cloned()) {
         let big = FunBit::from_bit(big);
         let small = FunBit::from_bit(small);
@@ -1658,7 +1658,7 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
 
     let mut b2 = FunBit::Constant(false);
 
-    // small>=Mm
+    // small<Mm
     for(big,small)in small.iter().cloned().zip(Mm.iter().cloned()) {
         let big = FunBit::from_bit(big);
         let small = FunBit::from_bit(small);
@@ -1673,7 +1673,7 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
 
     let mut b3 = FunBit::Constant(false);
 
-    // Mp>=big
+    // Mp<big
     for(big,small)in Mp.iter().cloned().zip(big.iter().cloned()) {
         let big = FunBit::from_bit(big);
         let small = FunBit::from_bit(small);
@@ -1688,8 +1688,8 @@ pub fn assert_nonless_with_minus<E: Engine, CS: ConstraintSystem<E>>(big: &[Bit]
 
     let res = b1.xor(&b2,cs)?.xor(&b3,cs)?;
     // dirty and somewhat cheap
-    // big >=small
-    res.assert_is_false(cs);
+    // big >=small>=M- or M+>=big>=small or b+>=big&&b>=M-
+    res.not().assert_is_false(cs);
 
     Ok(())
 }
