@@ -7,12 +7,12 @@ authors = ["Sean Bowe <ewillbefull@gmail.com>"]
 rand = "0.3"
 
 [dependencies.pairing]
-git = "https://github.com/Senlody/pairing.git"
+git = "https://github.com/cryptape/pairing.git"
 branch = "0.11-release"
 default-features = false
 
 [dependencies.bellman]
-git = "https://github.com/Senlody/bellman.git"
+git = "https://github.com/cryptape/bellman.git"
 branch = "0.0.4_modified"
 default-features = false
 
